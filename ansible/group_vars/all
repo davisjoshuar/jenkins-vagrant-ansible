@@ -1,0 +1,10 @@
+---
+### NOTES ###
+#variables names should not contain numbers
+
+##os-common#####################################
+vagrant_or_aws_ssh_user: "vagrant" #vagrant for localhost, or ec2-user for aws linux ami or centos
+
+##jenkins#####################################
+jenkins_repo_ver: "2.7.1-1.1"
+

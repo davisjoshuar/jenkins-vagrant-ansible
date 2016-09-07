@@ -1,0 +1,21 @@
+---
+ - name: jenkins | setup jenkins repo
+   get_url:
+     url: http://mirrors.jenkins-ci.org/redhat-stable/jenkins-{{jenkins_repo_ver}}.noarch.rpm
+     dest: /tmp/jenkins-{{jenkins_repo_ver}}.noarch.rpm
+    
+ - name: jenkins | install jenkins
+   yum: name=/tmp/jenkins-{{jenkins_repo_ver}}.noarch.rpm
+
+ - name: jenkins | yum | install specific packages
+   yum: name={{item}} state=present
+   with_items:
+     - jenkins
+   when: ansible_os_family == "RedHat"
+   tags: packages
+
+ - name: jenkins | ensure jenkins is installed.
+   yum: name=jenkins-{{jenkins_repo_ver}} state=installed
+
+ - name: jenkins | ensure jenkins is started and runs on startup.
+   service: name=jenkins state=started enabled=yes

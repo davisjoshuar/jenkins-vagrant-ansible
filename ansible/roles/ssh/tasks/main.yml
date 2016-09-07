@@ -1,0 +1,26 @@
+---
+- name: ssh | Reconfigure SSH to only allow access using key-based authentication
+  lineinfile: dest=/etc/ssh/sshd_config 
+              regexp="^#?PasswordAuthentication"
+              line="PasswordAuthentication no"
+  notify: Restart SSH
+
+- name: ssh | Set up root's .ssh directory
+  file: path=/root/.ssh
+        state=directory
+
+- name: ssh | Generate the ssh configuration file and restart the service if it has been updated
+  copy: src=config
+        dest={{ root_ssh_location }}/config
+        owner=root
+        group=root
+  notify: Restart SSH
+
+- name: ssh | Generate the id_rsa private key file for read only git user git-distribution@pombe.com and restart the service if it has been updated
+  copy: src=id_rsa
+        dest={{ root_ssh_location }}/id_rsa
+        owner=root
+        group=root
+        mode=600
+  notify: Restart SSH
+

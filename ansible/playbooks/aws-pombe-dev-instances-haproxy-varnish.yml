@@ -1,0 +1,18 @@
+---
+
+# single pounds # for clean build or comments
+# double pounds ## for building from custom ami
+
+
+  - include: ../roles/user-aws-iam-haproxy/tasks/main.yml
+
+  - include: ../roles/keepalived/tasks/main.yml
+
+  - include: ../roles/haproxy/tasks/main.yml
+
+  - include: ../roles/varnish/tasks/main.yml
+
+  - include: ../roles/pombe-service-prerequisites/tasks/main.yml #needs nodejs_pombe_1_8 see aws-pombe-dev.yml
+
+  - include: ../roles/pombe-service-error-page/tasks/main.yml 
+

@@ -1,0 +1,10 @@
+---
+- name: Restart SSH #name must match notify statement from tasks/main.yml 
+  service: name=ssh
+           state=restarted
+  when: "ansible_os_family == 'Ubuntu'"
+
+- name: Restart SSH
+  service: name=sshd
+           state=restarted
+  when: "ansible_os_family == 'RedHat'"

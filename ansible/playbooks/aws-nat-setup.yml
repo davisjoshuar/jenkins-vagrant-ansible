@@ -1,0 +1,35 @@
+---
+# playbook for nat instance, called by vagrant_files/_infrastructure/Vagrantfile 
+# amazon linux -- includes ntpd and aws cli
+
+- hosts: aws-nat
+
+  user: ec2-user
+  sudo: true
+
+  pre_tasks:
+    - include: aws-scripts-mon-cron-pre-install.yml #install cw monitor script pre-reqs prior to roles/aws-scripts-mon
+
+  roles:
+    - os-common
+    - hostname
+    - { role: user-os-pombeman, pombeman_groups: "wheel,adm", when: "ansible_os_family == 'RedHat'" }
+    - user-os-admins
+    - ssh-nogit
+    - aws-scripts-mon        #cloudwatch
+    - util-nagios-client #includes setting up nrpe.cfg
+
+  tasks:
+    - cron: name="aws-scripts-mon" cron_file=aws-scripts-mon state=absent
+    - cron: name="aws-scripts-mon" minute=*/1
+            user="pombeman" job="/home/pombeman/aws-scripts-mon/mon-put-instance-data.pl --aws-credential-file=/home/pombeman/aws-scripts-mon/awscreds.template --mem-util --disk-space-util --disk-path=/ --from-cron"
+            cron_file=aws-scripts-mon
+
+    - name: set instance id variable
+      shell: curl http://169.254.169.254/latest/meta-data/instance-id
+      register: this_instance_id
+
+    - name: disable source-dest-check
+      shell: aws ec2 modify-instance-attribute --instance-id {{ this_instance_id.stdout }} --source-dest-check "{\"Value\"":" false}"
+      delegate_to: 127.0.0.1
+      sudo: false

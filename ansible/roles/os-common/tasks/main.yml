@@ -1,0 +1,33 @@
+---
+
+#REDHAT -- CENTOS -- AMAZON LINUX
+
+    - name: os-common | yum | upgrade all packages | RedHat #http://docs.ansible.com/yum_module.html
+      yum: name=* state=latest
+      when: ansible_os_family == "RedHat"
+      sudo: true
+      remote_user: "{{vagrant_or_aws_ssh_user}}"
+      tags: packages
+
+    - name: os-common | yum | install specific packages
+      yum: name={{item}} state=present
+      with_items:
+        - gcc
+        - git
+        - net-tools
+        - java
+      when: ansible_os_family == "RedHat"
+      tags: packages
+
+    - name: os-common | yum | remove unused packages
+      yum: name={{item}} state=absent
+      with_items:
+        - sendmail
+      when: ansible_os_family == "RedHat"
+      tags: packages
+
+#ALL
+
+    - name: os-common | create /var/log/jenkins
+      file: path=/var/log/jenkins/ state=directory
+

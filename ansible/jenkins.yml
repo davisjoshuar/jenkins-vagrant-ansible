@@ -1,0 +1,33 @@
+---
+# -- this is the command and control playbook for playbooks at ./playbooks
+# -- associated Vagrantfile at ../
+# -- each hosts section can have a single "include" statement pointing to a yml for those hosts
+
+#### -- JENKINS -- #######################################
+- hosts: jenkins
+  sudo: true
+
+  roles:
+   - os-common
+   - hostname
+   - ssh #includes pombe git clone private key
+   - jenkins
+
+#### -- HAPROXY -- #################################################################
+#- hosts: dev-pub-haproxy-varnish:children
+  #user: ubuntu #setting ansible_ssh_user in ansible_hosts
+#  sudo: true
+
+  tasks:
+#  - { include: aws-pombe-dev/aws-pombe-dev-instances-haproxy-varnish.yml }
+   - shell: echo hello
+  
+#    - name: generate V1 pombeDev config file 
+#      template: src=shared_configs/josh_dev.js
+#                dest=/home/nodeapp/josh_dev.js
+#                owner=nodeapp
+#                group=nodeapp
+#                mode=644
+
+#    - shell: sudo /root/./v1_dev_pombe_install.sh
+

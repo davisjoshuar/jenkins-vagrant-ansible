@@ -1,0 +1,11 @@
+---
+# Packages
+
+install_ubuntu_packages:
+ - git
+ - gcc
+ - make
+
+remove_ubuntu_packages:
+ - sendmail
+
